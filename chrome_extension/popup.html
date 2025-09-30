@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithm Visualizer Converter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🎨 Algorithm Visualizer</h1>
+                <p class="subtitle">Convert Python → JavaScript</p>
+            </div>
+            <div class="status-indicator" id="statusIndicator">
+                <span class="status-dot"></span>
+                <span class="status-text">Ready</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Input Section -->
+            <section class="section input-section">
+                <div class="section-header">
+                    <h2>Python Input</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary btn-sm" id="clearBtn">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                            </svg>
+                            Clear
+                        </button>
+                        <button class="btn btn-secondary btn-sm" id="exampleBtn">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                            Example
+                        </button>
+                    </div>
+                </div>
+                <div class="code-editor-wrapper">
+                    <textarea
+                        id="pythonInput"
+                        class="code-editor"
+                        placeholder="Paste your Python algorithm here...&#10;&#10;Example:&#10;def bubbleSort(arr):&#10;    n = len(arr)&#10;    for i in range(n):&#10;        for j in range(n-i-1):&#10;            if arr[j] > arr[j+1]:&#10;                arr[j], arr[j+1] = arr[j+1], arr[j]&#10;    return arr"
+                        spellcheck="false"
+                    ></textarea>
+                    <div class="editor-footer">
+                        <span class="line-count" id="lineCount">Lines: 0</span>
+                        <span class="char-count" id="charCount">Characters: 0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Convert Button -->
+            <div class="convert-section">
+                <button class="btn btn-primary btn-large" id="convertBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="12" y1="11" x2="12" y2="17"/>
+                        <polyline points="9 14 12 11 15 14"/>
+                    </svg>
+                    Convert to JavaScript
+                </button>
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner"></div>
+                    <span>Processing...</span>
+                </div>
+            </div>
+
+            <!-- Analysis Info -->
+            <div class="analysis-info" id="analysisInfo" style="display: none;">
+                <h3>📊 Analysis Results</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">1D Arrays:</span>
+                        <span class="info-value" id="arrays1d">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">2D Arrays:</span>
+                        <span class="info-value" id="arrays2d">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Viz Type:</span>
+                        <span class="info-value" id="vizType">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Has Sorting:</span>
+                        <span class="info-value" id="hasSorting">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <section class="section output-section" id="outputSection" style="display: none;">
+                <div class="section-header">
+                    <h2>JavaScript Output</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-success btn-sm" id="copyBtn">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                            </svg>
+                            Copy
+                        </button>
+                        <button class="btn btn-success btn-sm" id="downloadBtn">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                            </svg>
+                            Download
+                        </button>
+                    </div>
+                </div>
+                <div class="code-editor-wrapper">
+                    <pre id="jsOutput" class="code-output"></pre>
+                    <div class="editor-footer">
+                        <span class="line-count" id="outputLineCount">Lines: 0</span>
+                        <span class="success-badge">✓ Ready for Algorithm Visualizer</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Error Section -->
+            <div class="error-section" id="errorSection" style="display: none;">
+                <div class="error-content">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <div>
+                        <h3>Error</h3>
+                        <p id="errorMessage">Something went wrong</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="https://github.com/algorithm-visualizer" target="_blank">GitHub</a>
+                <span>•</span>
+                <a href="#" id="settingsBtn">Settings</a>
+                <span>•</span>
+                <a href="#" id="helpBtn">Help</a>
+            </div>
+            <p class="footer-text">Made with ❤️ for algorithm learners</p>
+        </footer>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
