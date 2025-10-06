@@ -1,0 +1,13 @@
+{
+  "name": "Comb Sort",
+  "path": "Brute Force/Comb Sort/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, ChartTracer, LogTracer, Randomize, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\n// define tracer variables {\nconst chart = new ChartTracer();\nconst tracer = new Array1DTracer();\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([chart, tracer, logger]));\nconst D = Randomize.Array1D({ N: 15 });\ntracer.set(D);\ntracer.chart(chart);\nTracer.delay();\n// }\n\n// logger {\nlogger.println(`original array = [${D.join(', ')}]`);\n// }\nconst N = D.length;\nlet swapped;\nlet gap = N; // initialize gap size\nconst shrink = 1.3; // set the gap shrink factor\n\ndo {\n  // update the gap value for the next comb.\n  gap = Math.floor(gap / shrink);\n  if (gap < 1) {\n    // minimum gap is 1\n    gap = 1;\n  }\n\n  swapped = false; // initialize swapped\n  // a single comb over the input list\n  for (let i = 0; i + gap < N; i++) {\n    // visualize {\n    tracer.select(i);\n    tracer.select(i + gap);\n    Tracer.delay();\n    // }\n\n    if (D[i] > D[i + gap]) {\n      // logger {\n      logger.println(`swap ${D[i]} and ${D[i + gap]}`); // log swap event\n      // }\n      \n      const temp = D[i];\n      D[i] = D[i + gap];\n      D[i + gap] = temp;\n\n      // visualize {\n      tracer.patch(i, D[i]);\n      tracer.patch(i + gap, D[i + gap]);\n      Tracer.delay();\n      tracer.depatch(i);\n      tracer.depatch(i + gap);\n      // }\n\n      swapped = true; // Flag swapped has happened and list is not guaranteed sorted\n    }\n    // visualize {\n    tracer.deselect(i);\n    tracer.deselect(i + gap);\n    // }\n  } // End of combing\n} while (gap !== 1 || swapped);\n",
+  "category": "sorting",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "uses_randomize",
+    "has_logging",
+    "uses_chart"
+  ]
+}

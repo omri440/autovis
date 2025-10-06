@@ -73,17 +73,17 @@ class BlueprintGenerator:
         self._emit(f"const {{ {imports} }} = require('algorithm-visualizer');")
         self._emit()
 
+    # In your blueprint_generator.py file, find the _determine_needed_imports method
+    # and replace it with this:
+
     def _determine_needed_imports(self) -> Set[str]:
         """Determine which Algorithm Visualizer modules are needed."""
-        needed = {"Tracer", "Layout", "VerticalLayout", "LogTracer"}
-
-        # Always add Randomize for data generation
-        needed.add("Randomize")
+        # ALWAYS include these core modules that are used in every visualization
+        needed = {"Tracer", "Randomize", "Layout", "VerticalLayout", "LogTracer"}
 
         # Array tracers
         if self.vars_1d or self.vars_stack or self.vars_queue or self.vars_heap:
             needed.add("Array1DTracer")
-            # Add chart for array visualizations
             needed.add("ChartTracer")
 
         if self.vars_2d:

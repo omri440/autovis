@@ -1,0 +1,10 @@
+{
+  "name": "Depth-First Search",
+  "path": "Brute Force/Depth-First Search/weightedGraph.js",
+  "code": "// import visualization libraries {\nconst { Tracer, GraphTracer, LogTracer, Randomize, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\n// define tracer variables {\nconst tracer = new GraphTracer().directed(false).weighted();\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([tracer, logger]));\ntracer.log(logger);\nconst G = Randomize.Graph({ N: 5, ratio: 1, directed: false, weighted: true });\ntracer.set(G);\nTracer.delay();\n// }\n\nlet D; // D[i] indicates whether the i-th node is discovered or not\n\nfunction DFS(node, parent, weight) { // node = current node, parent = previous node\n  // visualize {\n  tracer.visit(node, parent, weight);\n  Tracer.delay();\n  // }\n  D[node] = true; // label current node as discovered\n  for (let i = 0; i < G[node].length; i++) {\n    if (G[node][i]) { // if the edge from current node to the i-th node exists\n      if (!D[i]) { // if the i-th node is not labeled as discovered\n        DFS(i, node, weight + G[node][i]); // recursively call DFS\n      }\n    }\n  }\n  D[node] = false; // label current node as undiscovered\n  // visualize {\n  tracer.leave(node, parent, 0);\n  Tracer.delay();\n  // }\n}\n\nfor (let i = 0; i < G.length; i++) { // start from every node\n  // logger {\n  logger.println(`start from ${i}`);\n  // }\n  D = [];\n  for (let j = 0; j < G.length; j++) D.push(false);\n  DFS(i, undefined, 0);\n}\n",
+  "category": "searching",
+  "patterns": [
+    "uses_randomize",
+    "has_logging"
+  ]
+}

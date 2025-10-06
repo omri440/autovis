@@ -1,0 +1,13 @@
+{
+  "name": "Binary Search",
+  "path": "Branch and Bound/Binary Search/recursive.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, ChartTracer, LogTracer, Randomize, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\n// define tracer variables {\nconst chart = new ChartTracer();\nconst tracer = new Array1DTracer();\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([chart, tracer, logger]));\nconst D = Randomize.Array1D({ N: 15, value: () => Randomize.Integer({ min: 0, max: 50 }), sorted: true });\ntracer.set(D);\ntracer.chart(chart);\nTracer.delay();\n// }\n\nfunction BinarySearch(array, element, minIndex, maxIndex) { // array = sorted array, element = element to be found, minIndex = low index, maxIndex = high index\n  if (minIndex > maxIndex) {\n    // logger {\n    logger.println(`${element} is not found!`);\n    // }\n    return -1;\n  }\n\n  const middleIndex = Math.floor((minIndex + maxIndex) / 2);\n  const testElement = array[middleIndex];\n\n  // visualize {\n  tracer.select(minIndex, maxIndex);\n  Tracer.delay();\n  tracer.patch(middleIndex);\n  logger.println(`Searching at index: ${middleIndex}`);\n  Tracer.delay();\n  tracer.depatch(middleIndex);\n  tracer.deselect(minIndex, maxIndex);\n  // }\n\n  if (testElement < element) {\n    // logger {\n    logger.println('Going right.');\n    // }\n    return BinarySearch(array, element, middleIndex + 1, maxIndex);\n  }\n\n  if (testElement > element) {\n    // logger {\n    logger.println('Going left.');\n    // }\n    return BinarySearch(array, element, minIndex, middleIndex - 1);\n  }\n\n  if (testElement === element) {\n    // visualize {\n    logger.println(`${element} is found at position ${middleIndex}!`);\n    tracer.select(middleIndex);\n    // }\n    return middleIndex;\n  }\n\n  // logger {\n  logger.println(`${element} is not found!`);\n  // }\n  return -1;\n}\n\nconst element = D[Randomize.Integer({ min: 0, max: D.length - 1 })];\n\n// logger {\nlogger.println(`Using binary search to find ${element}`);\n// }\nBinarySearch(D, element, 0, D.length - 1);\n",
+  "category": "searching",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "uses_randomize",
+    "has_logging",
+    "uses_chart"
+  ]
+}

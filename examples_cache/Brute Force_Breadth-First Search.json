@@ -1,0 +1,9 @@
+{
+  "name": "Breadth-First Search",
+  "path": "Brute Force/Breadth-First Search/tree.js",
+  "code": "// import visualization libraries {\nconst { Tracer, GraphTracer, LogTracer, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\nconst G = [ // G[i][j] indicates whether the path from the i-th node to the j-th node exists or not\n  [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],\n  [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0],\n  [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],\n  [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],\n  [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],\n  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\n  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\n  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\n  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\n  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\n  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\n];\n\n// define tracer variables {\nconst tracer = new GraphTracer();\nconst logger = new LogTracer();\ntracer.log(logger);\nLayout.setRoot(new VerticalLayout([tracer, logger]));\ntracer.set(G);\ntracer.layoutTree(0);\nTracer.delay();\n// }\n\nfunction BFS(s) { // s = start node\n  const Q = [];\n  Q.push(s); // add start node to queue\n  // visualize {\n  tracer.visit(s);\n  Tracer.delay();\n  // }\n  while (Q.length > 0) {\n    const node = Q.shift(); // dequeue\n    for (let i = 0; i < G[node].length; i++) {\n      if (G[node][i]) { // if current node has the i-th node as a child\n        Q.push(i); // add child node to queue\n        // visualize {\n        tracer.visit(i, node);\n        Tracer.delay();\n        // }\n      }\n    }\n  }\n}\n\nBFS(0);\n",
+  "category": "searching",
+  "patterns": [
+    "custom_data"
+  ]
+}

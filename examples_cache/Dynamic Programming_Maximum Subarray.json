@@ -1,0 +1,11 @@
+{
+  "name": "Maximum Subarray",
+  "path": "Dynamic Programming/Maximum Subarray/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, LogTracer, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\nconst D = [-2, -3, 4, -1, -2, 1, 5, -3];\n\n// define tracer variables {\nconst tracer = new Array1DTracer();\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([tracer, logger]));\ntracer.set(D);\nTracer.delay();\n// }\n\nconst maxSubarraySum = (function maxSubarray(array) {\n  let maxSoFar = 0;\n  let maxEndingHere = 0;\n\n  // logger {\n  logger.println('Initializing maxSoFar = 0 & maxEndingHere = 0');\n  // }\n\n  for (let i = 0; i < array.length; i++) {\n    // visualize {\n    tracer.select(i);\n    // }\n    // logger {\n    logger.println(`${maxEndingHere} + ${array[i]}`);\n    // }\n    maxEndingHere += array[i];\n    // logger {\n    logger.println(`=> ${maxEndingHere}`);\n    // }\n\n    if (maxEndingHere < 0) {\n      // logger {\n      logger.println('maxEndingHere is negative, set to 0');\n      // }\n      maxEndingHere = 0;\n    }\n\n    if (maxSoFar < maxEndingHere) {\n      // logger {\n      logger.println(`maxSoFar < maxEndingHere, setting maxSoFar to maxEndingHere (${maxEndingHere})`);\n      // }\n      maxSoFar = maxEndingHere;\n    }\n\n    // visualize {\n    Tracer.delay();\n    tracer.deselect(i);\n    // }\n  }\n\n  return maxSoFar;\n}(D));\n\n// logger {\nlogger.println(`Maximum Subarray's Sum is: ${maxSubarraySum}`);\n// }\n",
+  "category": "dynamic_programming",
+  "patterns": [
+    "select_deselect",
+    "custom_data",
+    "has_logging"
+  ]
+}

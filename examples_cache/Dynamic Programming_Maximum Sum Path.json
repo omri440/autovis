@@ -1,0 +1,13 @@
+{
+  "name": "Maximum Sum Path",
+  "path": "Dynamic Programming/Maximum Sum Path/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array2DTracer, LogTracer, Randomize, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\n// define tracer variables {\nconst D = Randomize.Array2D({ N: 5, M: 5, value: () => Randomize.Integer({ min: 1, max: 5 }) });\nconst dataViewer = new Array2DTracer();\nconst tracer = new Array2DTracer('Results Table');\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([dataViewer, tracer, logger]));\ndataViewer.set(D);\nconst DP = [];\nfor (let i = 0; i < D.length; i++) {\n  DP.push([]);\n  for (let j = 0; j < D[i].length; j++) {\n    DP[i].push(Infinity);\n  }\n}\ntracer.set(DP);\nTracer.delay();\n// }\n\nconst N = DP.length;\nconst M = DP[0].length;\n\nfunction update(i, j, value) {\n  DP[i][j] = value;\n  // visualize {\n  dataViewer.select(i, j);\n  Tracer.delay();\n  tracer.patch(i, j, DP[i][j]);\n  Tracer.delay();\n  tracer.depatch(i, j);\n  dataViewer.deselect(i, j);\n  // }\n}\n\nfor (let i = 0; i < N; i++) {\n  for (let j = 0; j < M; j++) {\n    if (i === 0 && j === 0) {\n      update(i, j, D[i][j]);\n    } else if (i === 0) {\n      // visualize {\n      tracer.select(i, j - 1);\n      // }\n      update(i, j, DP[i][j - 1] + D[i][j]);\n      // visualize {\n      tracer.deselect(i, j - 1);\n      // }\n    } else if (j === 0) {\n      // visualize {\n      tracer.select(i - 1, j);\n      // }\n      update(i, j, DP[i - 1][j] + D[i][j]);\n      // visualize {\n      tracer.deselect(i - 1, j);\n      // }\n    } else {\n      // visualize {\n      tracer.select(i, j - 1);\n      tracer.select(i - 1, j);\n      // }\n      update(i, j, Math.max(DP[i][j - 1], DP[i - 1][j]) + D[i][j]);\n      // visualize {\n      tracer.deselect(i, j - 1);\n      tracer.deselect(i - 1, j);\n      // }\n    }\n  }\n}\n// logger {\nlogger.println(`max = ${DP[N - 1][M - 1]}`);\n// }\n",
+  "category": "dynamic_programming",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "uses_randomize",
+    "has_logging",
+    "uses_2d_array"
+  ]
+}

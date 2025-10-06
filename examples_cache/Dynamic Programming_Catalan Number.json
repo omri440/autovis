@@ -1,0 +1,11 @@
+{
+  "name": "Catalan Number",
+  "path": "Dynamic Programming/Catalan Number/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, LogTracer, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\nconst N = 10;\nconst A = new Array(N + 1);\nfor (let i = N; i >= 0; i--) {\n  A[i] = 0;\n}\n\n// define tracer variables {\nconst tracer = new Array1DTracer(' Catalan Numbers ');\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([tracer, logger]));\ntracer.set(A);\nTracer.delay();\n// }\n\nA[0] = 1;\n// visualize {\ntracer.patch(0, A[0]);\nTracer.delay();\ntracer.depatch(0);\n// }\nA[1] = 1;\n// visualize {\ntracer.patch(1, A[1]);\nTracer.delay();\ntracer.depatch(1);\n// }\n\nfor (let i = 2; i <= N; i++) {\n  for (let j = 0; j < i; j++) {\n    A[i] += A[j] * A[i - j - 1];\n    // visualize {\n    tracer.select(j);\n    Tracer.delay();\n    tracer.select(i - j - 1);\n    Tracer.delay();\n    tracer.patch(i, A[i]);\n    Tracer.delay();\n    tracer.deselect(j);\n    tracer.deselect(i - j - 1);\n    tracer.depatch(i);\n    // }\n  }\n}\n\n// visualize {\nlogger.println(` The ${N}th Catalan Number is ${A[N]}`);\ntracer.select(N);\nTracer.delay();\n// }\n",
+  "category": "dynamic_programming",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "has_logging"
+  ]
+}

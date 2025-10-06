@@ -45,12 +45,36 @@
                     <textarea
                         id="pythonInput"
                         class="code-editor"
-                        placeholder="Paste your Python algorithm here...&#10;&#10;Example:&#10;def bubbleSort(arr):&#10;    n = len(arr)&#10;    for i in range(n):&#10;        for j in range(n-i-1):&#10;            if arr[j] > arr[j+1]:&#10;                arr[j], arr[j+1] = arr[j+1], arr[j]&#10;    return arr"
+                        placeholder="Paste your Python algorithm here..."
                         spellcheck="false"
                     ></textarea>
                     <div class="editor-footer">
                         <span class="line-count" id="lineCount">Lines: 0</span>
                         <span class="char-count" id="charCount">Characters: 0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Settings Section -->
+            <section class="section ai-settings">
+                <div class="section-header">
+                    <h2>🤖 AI Polishing</h2>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="aiToggle" checked>
+                        <label for="aiToggle"></label>
+                    </div>
+                </div>
+                <div class="ai-options" id="aiOptions">
+                    <div class="option-group">
+                        <label>Provider:</label>
+                        <select id="providerSelect" class="provider-select">
+                            <option value="claude">Claude (Anthropic)</option>
+                            <option value="openai">GPT-4 (OpenAI)</option>
+                            <option value="local">Local LLM (Ollama)</option>
+                        </select>
+                    </div>
+                    <div class="ai-description">
+                        AI will refine the output with better logging, comments, and optimized visualizations.
                     </div>
                 </div>
             </section>
@@ -68,7 +92,21 @@
                 </button>
                 <div class="loading-spinner" id="loadingSpinner">
                     <div class="spinner"></div>
-                    <span>Processing...</span>
+                    <span id="loadingText">Processing...</span>
+                </div>
+            </div>
+
+            <!-- Polish Info -->
+            <div class="polish-info" id="polishInfo" style="display: none;">
+                <div class="polish-badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                    </svg>
+                    <span id="polishStatus">AI Enhanced</span>
+                </div>
+                <div class="polish-improvements">
+                    <span id="improvementText"></span>
                 </div>
             </div>
 

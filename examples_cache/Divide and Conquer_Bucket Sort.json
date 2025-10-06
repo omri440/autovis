@@ -1,0 +1,13 @@
+{
+  "name": "Bucket Sort",
+  "path": "Divide and Conquer/Bucket Sort/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, Array2DTracer, ChartTracer, Randomize, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\n// define tracer variables {\nconst chartTracer = new ChartTracer('Chart');\nconst arrayTracer = new Array1DTracer('Array');\nconst bucketsTracer = new Array2DTracer('Buckets');\nLayout.setRoot(new VerticalLayout([chartTracer, arrayTracer, bucketsTracer]));\n// }\n\n// define input variables\nconst N = 25; // the size of an array\nconst K = 5; // the number of buckets\nconst array = Randomize.Array1D({ N, value: () => Randomize.Integer({ min: 0, max: 999 }) });\n\n(function main() {\n  // create K buckets\n  const buckets = [...new Array(K)].map(() => []);\n  // visualize {\n  arrayTracer.chart(chartTracer);\n  arrayTracer.set(array);\n  bucketsTracer.set(buckets);\n  Tracer.delay();\n  // }\n\n  // find the maximum value that will be used for distribution\n  const max = Math.max(...array);\n\n  // distribute the elements into the buckets\n  for (let i = 0; i < N; i++) {\n    const number = array[i];\n    const bucketIndex = Math.floor(number / (max + 1) * K);\n    const bucket = buckets[bucketIndex];\n    bucket.push(number);\n    // visualize {\n    arrayTracer.select(i);\n    bucketsTracer.patch(bucketIndex, bucket.length - 1, number);\n    Tracer.delay();\n    bucketsTracer.depatch(bucketIndex, bucket.length - 1);\n    // }\n\n    // insertion sort within the bucket\n    let j = bucket.length - 1;\n    while (j > 0 && bucket[j - 1] > bucket[j]) {\n      const temp = bucket[j - 1];\n      bucket[j - 1] = bucket[j];\n      bucket[j] = temp;\n      // visualize {\n      bucketsTracer.patch(bucketIndex, j - 1, bucket[j - 1]);\n      bucketsTracer.patch(bucketIndex, j, bucket[j]);\n      Tracer.delay();\n      bucketsTracer.depatch(bucketIndex, j - 1);\n      bucketsTracer.depatch(bucketIndex, j);\n      // }\n      j--;\n    }\n    // visualize {\n    arrayTracer.deselect(i);\n    // }\n  }\n\n  // concatenate the buckets back into the array\n  let i = 0;\n  for (let bucketIndex = 0; bucketIndex < K; bucketIndex++) {\n    const bucket = buckets[bucketIndex];\n    for (let j = 0; j < bucket.length; j++) {\n      array[i] = bucket[j];\n      // visualize {\n      arrayTracer.patch(i, array[i]);\n      bucketsTracer.select(bucketIndex, j);\n      Tracer.delay();\n      bucketsTracer.deselect(bucketIndex, j);\n      arrayTracer.depatch(i);\n      // }\n      i++;\n    }\n  }\n})();\n",
+  "category": "sorting",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "uses_randomize",
+    "uses_chart",
+    "uses_2d_array"
+  ]
+}

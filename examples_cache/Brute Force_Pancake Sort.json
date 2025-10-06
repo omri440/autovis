@@ -1,0 +1,13 @@
+{
+  "name": "Pancake Sort",
+  "path": "Brute Force/Pancake Sort/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, ChartTracer, LogTracer, Randomize, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\n// define tracer variables {\nconst chart = new ChartTracer();\nconst tracer = new Array1DTracer();\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([chart, tracer, logger]));\nconst D = Randomize.Array1D({ N: 10 });\ntracer.set(D);\ntracer.chart(chart);\nTracer.delay();\n// }\n\n// logger {\nlogger.println(`original array = [${D.join(', ')}]`);\n// }\nconst N = D.length;\n\nfunction flip(start) {\n  // visualize {\n  tracer.select(start, N - 1);\n  Tracer.delay();\n  // }\n  let idx = 0;\n  for (let i = start; i < (start + N) / 2; i++) {\n    // visualize {\n    tracer.select(i);\n    Tracer.delay();\n    // }\n    const temp = D[i];\n    D[i] = D[N - idx - 1];\n    D[N - idx - 1] = temp;\n    // visualize {\n    tracer.patch(i, D[i]);\n    tracer.patch(N - idx - 1, D[N - idx - 1]);\n    Tracer.delay();\n    tracer.depatch(i);\n    tracer.depatch(N - idx - 1);\n    tracer.deselect(i);\n    // }\n    idx++;\n  }\n  // visualize {\n  tracer.deselect(start, N - 1);\n  // }\n}\n\nfor (let i = 0; i < N - 1; i++) {\n  // logger {\n  logger.println(`round ${i + 1}`);\n  // }\n  const currArr = D.slice(i, N);\n  const currMax = currArr.reduce((prev, curr, idx) => ((curr > prev.val) ? { idx, val: curr } : prev), {\n    idx: 0,\n    val: currArr[0],\n  });\n  if (currMax.idx !== 0) { // if currMax.idx === 0 that means max element already at the bottom, no flip required\n    // logger {\n    logger.println(`flip at ${currMax.idx + i} (step 1)`);\n    // }\n    flip(currMax.idx + i, N);\n    // logger {\n    logger.println(`flip at ${i} (step 2)`);\n    // }\n    flip(i, N);\n  }\n}\n\n// logger {\nlogger.println(`sorted array = [${D.join(', ')}]`);\n// }\n",
+  "category": "sorting",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "uses_randomize",
+    "has_logging",
+    "uses_chart"
+  ]
+}

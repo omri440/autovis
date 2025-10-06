@@ -1,0 +1,10 @@
+{
+  "name": "Magic Square",
+  "path": "Uncategorized/Magic Square/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array2DTracer, LogTracer, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\nconst n = 7;\nconst A = new Array(n);\nfor (let i = n - 1; i >= 0; i--) {\n  A[i] = new Array(n);\n}\n\nfor (let i = n - 1; i >= 0; i--) {\n  for (let j = n - 1; j >= 0; j--) {\n    A[i][j] = 0;\n  }\n}\n\n// define tracer variables {\nconst tracer = new Array2DTracer('Magic Square');\nconst logTracer = new LogTracer('Console');\nLayout.setRoot(new VerticalLayout([tracer, logTracer]));\ntracer.set(A);\nTracer.delay();\n// }\n\nlet i = Math.floor(n / 2);\nlet j = n - 1;\n\nfor (let num = 1; num <= n * n;) {\n  // logger {\n  logTracer.println(`i = ${i}`);\n  logTracer.println(`j = ${j}`);\n  // }\n\n  if (i === -1 && j === n) {\n    j = n - 2;\n    i = 0;\n\n    // logger {\n    logTracer.println('Changing : ');\n    logTracer.println(`i = ${i}`);\n    logTracer.println(`j = ${j}`);\n    // }\n  } else {\n    if (j === n) {\n      j = 0;\n      // logger {\n      logTracer.println(`Changing : j = ${j}`);\n      // }\n    }\n    if (i < 0) {\n      i = n - 1;\n      // logger {\n      logTracer.println(`Changing : i = ${i}`);\n      // }\n    }\n  }\n\n  if (A[i][j] > 0) {\n    // logger {\n    logTracer.println(`Cell already filled : Changing i = ${i} j = ${j}`);\n    // }\n    j -= 2;\n    i++;\n  } else {\n    A[i][j] = num++;\n    // visualize {\n    tracer.patch(i, j, A[i][j]);\n    Tracer.delay();\n    tracer.depatch(i, j);\n    tracer.select(i, j);\n    Tracer.delay();\n    // }\n    j++;\n    i--;\n  }\n}\n\n// logger {\nlogTracer.println(`Magic Constant is ${n * (n * n + 1) / 2}`);\n// }\n",
+  "category": "other",
+  "patterns": [
+    "patch_depatch",
+    "uses_2d_array"
+  ]
+}

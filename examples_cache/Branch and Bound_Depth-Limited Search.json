@@ -1,0 +1,10 @@
+{
+  "name": "Depth-Limited Search",
+  "path": "Branch and Bound/Depth-Limited Search/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, GraphTracer, LogTracer, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\nconst G = [ // G[i][j] indicates whether the path from the i-th node to the j-th node exists or not\n  [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],\n  [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0],\n  [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],\n  [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],\n  [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],\n  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\n  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\n  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\n  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\n  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\n  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\n];\n\n// define tracer variables {\nconst tracer = new GraphTracer();\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([tracer, logger]));\ntracer.log(logger);\ntracer.set(G);\ntracer.layoutTree(0);\nTracer.delay();\n// }\n\n// This is a sample DLS applications where\n// we try to find number of descendant of root within some depth\nfunction DLSCount(limit, node, parent) { // node = current node, parent = previous node\n  // visualize {\n  tracer.visit(node, parent);\n  Tracer.delay();\n  // }\n  let child = 0;\n  if (limit > 0) { // cut off the search\n    for (let i = 0; i < G[node].length; i++) {\n      if (G[node][i]) { // if current node has the i-th node as a child\n        child += 1 + DLSCount(limit - 1, i, node); // recursively call DLS\n      }\n    }\n    return child;\n  }\n  return child;\n}\n\n// logger {\nlogger.println(`Number of descendant is ${DLSCount(2, 0)}`);\n// }\n",
+  "category": "searching",
+  "patterns": [
+    "custom_data",
+    "has_logging"
+  ]
+}

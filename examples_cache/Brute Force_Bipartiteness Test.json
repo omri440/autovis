@@ -1,0 +1,10 @@
+{
+  "name": "Bipartiteness Test",
+  "path": "Brute Force/Bipartiteness Test/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, GraphTracer, LogTracer, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\nconst G = [\n  [0, 1, 0, 1, 1],\n  [1, 0, 1, 0, 0],\n  [0, 1, 0, 1, 0],\n  [1, 0, 1, 0, 0], // <-- replace latest 0 with 1 to make G not biparted\n  [1, 0, 0, 0, 0],\n];\n\n// define tracer variables {\nconst tracer = new GraphTracer().directed(false);\nconst logger = new LogTracer();\ntracer.log(logger);\ntracer.set(G);\nconst colorsTracer = new Array1DTracer('Colors');\nLayout.setRoot(new VerticalLayout([tracer, logger, colorsTracer]));\nTracer.delay();\n// }\n\nfunction BFSCheckBipartiteness(s) {\n  const Q = [];\n\n  // Create a new matrix to set colors (0,1)\n  const Colors = [];\n  for (let _i = 0; _i < G.length; _i++) Colors[_i] = -1;\n  // visualize {\n  colorsTracer.set(Colors);\n  // }\n\n  Colors[s] = 1;\n  // visualize {\n  colorsTracer.patch(s, 1);\n  // }\n\n  Q.push(s); // add start node to queue\n\n  while (Q.length > 0) {\n    const node = Q.shift(); // dequeue\n    // visualize {\n    tracer.visit(node);\n    Tracer.delay();\n    // }\n\n    for (let i = 0; i < G[node].length; i++) {\n      if (G[node][i]) {\n        if (Colors[i] === -1) {\n          Colors[i] = 1 - Colors[node];\n          // visualize {\n          colorsTracer.patch(i, 1 - Colors[node]);\n          // }\n\n          Q.push(i);\n          // visualize {\n          tracer.visit(i, node);\n          Tracer.delay();\n          // }\n        } else if (Colors[i] === Colors[node]) {\n          // logger {\n          logger.println('Graph is not biparted');\n          // }\n          return false;\n        }\n      }\n    }\n  }\n\n  // logger {\n  logger.println('Graph is biparted');\n  // }\n  return true;\n}\n\nBFSCheckBipartiteness(0);\n",
+  "category": "other",
+  "patterns": [
+    "custom_data",
+    "has_logging"
+  ]
+}

@@ -4,6 +4,7 @@ from analyzer import analyze_code
 from blueprint_generator import generate_blueprint
 from translator import translate_to_js
 from code_combiner import combine_code, validate_output
+from fetch_algo_examples import GitHubExampleFetcher, ExampleDatabase
 
 
 def test_pipeline(name: str, python_code: str):
@@ -68,6 +69,17 @@ def main():
 
     results = []
 
+    # PRE-TEST: Examples fetcher
+    print("\n[PRE] Fetching Algorithm Visualizer examples (cache or GitHub)...")
+    fetcher = GitHubExampleFetcher()
+    examples = fetcher.get_examples(force_refresh=False)
+    if not examples:
+        print("Cache empty, forcing refresh...")
+        examples = fetcher.get_examples(force_refresh=True)
+    db = ExampleDatabase(examples)
+    print(f"✓ Examples loaded: {len(examples)} | Categories: {list(db.by_category.keys())}")
+    results.append(("Examples Loaded", len(examples) > 0))
+
     # TEST 1: Bubble Sort (Sorting Algorithm)
     test1 = """
 def bubbleSort(arr):
@@ -79,6 +91,30 @@ def bubbleSort(arr):
     return arr
 """
     results.append(("Bubble Sort", test_pipeline("Bubble Sort", test1)))
+
+    # TEST: numIslands (binary grid)
+    test_islands = """
+def numIslands(grid):
+    if not grid:
+        return 0
+    rows, cols = len(grid), len(grid[0])
+    visit = set()
+    def dfs(r,c):
+        if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] == '0' or (r,c) in visit:
+            return
+        visit.add((r,c))
+        for dr, dc in [(1,0),(-1,0),(0,1),(0,-1)]:
+            dfs(r+dr, c+dc)
+    counter = 0
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == '1' and (r,c) not in visit:
+                counter += 1
+                dfs(r,c)
+    return counter
+"""
+    ok = test_pipeline("numIslands", test_islands)
+    results.append(("numIslands", ok))
 
     # TEST 2: Two Sum (Hash Map)
     test2 = """
@@ -112,6 +148,24 @@ def binarySearch(arr, target):
     return -1
 """
     results.append(("Binary Search", test_pipeline("Binary Search", test3)))
+
+    # TEST: numDecodings (string to char array)
+    test_decodings = """
+def numDecodings(s):
+    memo = {}
+    def helper(i):
+        if i in memo: return memo[i]
+        if i == len(s): return 1
+        if s[i] == '0': return 0
+        res = helper(i+1)
+        if i+1 < len(s) and 10 <= int(s[i:i+2]) <= 26:
+            res += helper(i+2)
+        memo[i] = res
+        return res
+    return helper(0)
+"""
+    ok = test_pipeline("numDecodings", test_decodings)
+    results.append(("numDecodings", ok))
 
     # TEST 4: Valid Parentheses (Stack)
     test4 = """

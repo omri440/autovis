@@ -1,0 +1,13 @@
+{
+  "name": "Integer Partition",
+  "path": "Dynamic Programming/Integer Partition/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array2DTracer, LogTracer, Randomize, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\n// define tracer variables {\nconst tracer = new Array2DTracer();\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([tracer, logger]));\nconst integer = Randomize.Integer({ min: 5, max: 14 });\nconst D = [];\nconst A = \"\";\nfor (let i = 0; i <= integer; i++) {\n  D.push([]);\n  D[i][0] = 1\n  for (let j = 1; j <= integer; j++) D[i][j] = 0;\n}\ntracer.set(D);\nTracer.delay();\n// }\n\nfunction partition(A, n, p) {\n    // logger {\n    if (p == 0) logger.println(`[${A.split('').join(', ')}]`);\n    // }\n    else {\n        if (n > 1) partition(A, n - 1, p);\n        if (n <= p) partition(n + A, n, p - n);\n    }\n}\n\nfunction integerPartition(n) {\n\n  // cycle through each cell of matrix\n  for (let i = 1; i <= n; i++) {\n    for (let j = 1; j <= n; j++) {\n      if (i > j)  {\n        // visualize {\n        tracer.select(i, j);\n        Tracer.delay();\n        // }\n        // set cell to cell above it\n        D[i][j] = D[i - 1][j];\n        // visualize {\n        tracer.patch(i, j, D[i][j]);\n        Tracer.delay();\n        tracer.depatch(i, j);\n        tracer.deselect(i, j);\n        // }\n      }\n      else {\n        // visualize {\n          tracer.select(i, j);\n          Tracer.delay();\n        // }\n        // grab above cell and add it to previous cell\n        const above = D[i - 1][j];\n        const left = D[i][j - i];\n        D[i][j] = above + left;\n        // visualize {\n          tracer.patch(i, j, D[i][j]);\n          Tracer.delay();\n          tracer.depatch(i, j);\n          tracer.deselect(i, j);\n        // }\n      }\n    }\n  }\n  return D[n][n];\n}\n\n// logger {\nlogger.println(`Partitioning: ${integer}`);\n// }\npartition(A, integer, integer);\nconst part = integerPartition(integer);\n// logger {\nlogger.println(part);\n// }\n",
+  "category": "dynamic_programming",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "uses_randomize",
+    "has_logging",
+    "uses_2d_array"
+  ]
+}

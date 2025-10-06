@@ -1,0 +1,12 @@
+{
+  "name": "Rabin-Karp's String Search",
+  "path": "Brute Force/Rabin-Karp's String Search/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, LogTracer, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\nconst text = ['h', 'e', 'l', 'l', 'o', ' ', 's', 'i', 'r', ' ', 'h', 'e', 'l', 'l', 'o'];\nconst pattern = ['h', 'e', 'l', 'l', 'o'];\n\nconst Q = 101; // A prime number\nconst D = 256; // number of characters in the input alphabet\n\n// define tracer variables {\nconst logger = new LogTracer();\nconst tracer1 = new Array1DTracer('Text');\nconst tracer2 = new Array1DTracer('Pattern');\nLayout.setRoot(new VerticalLayout([logger, tracer1, tracer2]));\ntracer1.set(text);\ntracer2.set(pattern);\nTracer.delay();\n// }\n\nconst N = text.length;\nconst M = pattern.length;\n\nlet hashText = 0; // hash value for text\nlet hashPattern = 0; // hash value for pattern\nlet h = 1;\n\nfor (let i = 0; i < (M - 1); i++) {\n  h = (h * D) % Q;\n}\n\nfor (let i = 0; i < M; i++) {\n  hashPattern = (D * hashPattern + pattern[i].charCodeAt(0)) % Q;\n  hashText = (D * hashText + text[i].charCodeAt(0)) % Q;\n}\n\nfor (let i = 0; i <= N - M; i++) {\n  /*\n  Check if hash values of current window of text matches\n  with hash values of pattern. If match is found then\n  check for characters one by one\n  */\n  if (hashPattern === hashText) {\n    let f = 0;\n    // visualize {\n    tracer1.select(i, i + M - 1);\n    Tracer.delay();\n    tracer2.select(0, M - 1);\n    Tracer.delay();\n    // }\n    for (let j = 0; j < M; j++) {\n      // visualize {\n      tracer1.patch(i + j);\n      Tracer.delay();\n      tracer2.patch(j);\n      Tracer.delay();\n      // }\n      if (text[i + j] !== pattern[j]) {\n        f++;\n      }\n      // visualize {\n      tracer1.depatch(i + j);\n      tracer2.depatch(j);\n      // }\n    }\n\n    // visualize {\n    if (f === 0) {\n      logger.println(` Pattern found at index ${i}`);\n    }\n    tracer1.deselect(i, i + M);\n    tracer2.deselect(0, M - 1);\n    // }\n  }\n\n  /*\n  Calculate hash value for next window of text :\n  */\n  if (i < N - M) {\n    hashText = (D * (hashText - text[i].charCodeAt(0) * h) + text[i + M].charCodeAt(0)) % Q;\n\n    // Convert negative value of hashText (if found) to positive\n    if (hashText < 0) {\n      hashText += Q;\n    }\n  }\n}\n",
+  "category": "searching",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "custom_data",
+    "has_logging"
+  ]
+}

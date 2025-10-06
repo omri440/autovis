@@ -1,0 +1,13 @@
+{
+  "name": "Selection Sort",
+  "path": "Brute Force/Selection Sort/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, ChartTracer, LogTracer, Randomize, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\n// define tracer variables {\nconst chart = new ChartTracer();\nconst tracer = new Array1DTracer();\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([chart, tracer, logger]));\nconst D = Randomize.Array1D({ N: 15 });\ntracer.set(D);\ntracer.chart(chart);\nTracer.delay();\n// }\n\n// logger {\nlogger.println(`original array = [${D.join(', ')}]`);\n// }\nfor (let i = 0; i < D.length - 1; i++) {\n  let minJ = i;\n  // visualize {\n  tracer.select(i);\n  Tracer.delay();\n  // }\n  for (let j = i + 1; j < D.length; j++) {\n    // visualize {\n    tracer.select(j);\n    Tracer.delay();\n    // }\n    if (D[j] < D[minJ]) {\n      minJ = j;\n      // visualize {\n      tracer.patch(j);\n      Tracer.delay();\n      tracer.depatch(j);\n      // }\n    }\n    // visualize {\n    tracer.deselect(j);\n    // }\n  }\n  if (minJ !== i) {\n    // logger {\n    logger.println(`swap ${D[i]} and ${D[minJ]}`);\n    // }\n    const temp = D[i];\n    D[i] = D[minJ];\n    D[minJ] = temp;\n    // visualize {\n    tracer.patch(i, D[i]);\n    tracer.patch(minJ, D[minJ]);\n    Tracer.delay();\n    tracer.depatch(i);\n    tracer.depatch(minJ);\n    // }\n  }\n  // visualize {\n  tracer.deselect(i);\n  // }\n}\n// logger {\nlogger.println(`sorted array = [${D.join(', ')}]`);\n// }\n",
+  "category": "sorting",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "uses_randomize",
+    "has_logging",
+    "uses_chart"
+  ]
+}

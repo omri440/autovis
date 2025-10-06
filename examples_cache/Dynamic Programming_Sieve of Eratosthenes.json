@@ -1,0 +1,11 @@
+{
+  "name": "Sieve of Eratosthenes",
+  "path": "Dynamic Programming/Sieve of Eratosthenes/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, LogTracer, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\nconst N = 30;\nconst a = [];\nconst b = [];\nfor (let i = 1; i <= N; i++) {\n  a.push(i);\n  b.push(0);\n}\n\n// define tracer variables {\nconst tracer = new Array1DTracer('Sieve');\ntracer.set(a);\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([tracer, logger]));\nTracer.delay();\n// }\n\n// visualize {\nlogger.println('1 is not prime');\ntracer.select(0);\nTracer.delay();\n// }\nfor (let i = 2; i <= N; i++) {\n  if (b[i] === 0) {\n    // visualize {\n    logger.println(`${i} is not marked, so it is prime`);\n    // a[i-1] is prime mark by red indicators\n    tracer.patch(i - 1);\n    Tracer.delay();\n    // }\n    for (let j = i + i; j <= N; j += i) {\n      b[j] = 1; // a[j-1] is not prime, mark by blue indicators\n      // visualize {\n      logger.println(`${j} is a multiple of ${i} so it is marked as composite`);\n      tracer.select(j - 1);\n      Tracer.delay();\n      // }\n    }\n    // visualize {\n    tracer.depatch(i - 1);\n    // }\n  }\n}\n// logger {\nlogger.println(`The unmarked numbers are the prime numbers from 1 to ${N}`);\n// }\n",
+  "category": "dynamic_programming",
+  "patterns": [
+    "patch_depatch",
+    "custom_data",
+    "has_logging"
+  ]
+}

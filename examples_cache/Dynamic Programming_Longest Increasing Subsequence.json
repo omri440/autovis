@@ -1,0 +1,12 @@
+{
+  "name": "Longest Increasing Subsequence",
+  "path": "Dynamic Programming/Longest Increasing Subsequence/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, LogTracer, Randomize, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\n// define tracer variables {\nconst tracer = new Array1DTracer();\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([tracer, logger]));\nconst A = Randomize.Array1D({ N: 10, value: () => Randomize.Integer({ min: 0, max: 10 }) });\nconst LIS = new Array(A.length);\ntracer.set(A);\nTracer.delay();\n// }\n\n// Initialize LIS values for all indexes\nfor (let i = 0; i < A.length; i++) {\n  LIS[i] = 1;\n}\n\n// logger {\nlogger.println('Calculating Longest Increasing Subsequence values in bottom up manner ');\n// }\n// Compute optimized LIS values in bottom up manner\nfor (let i = 1; i < A.length; i++) {\n  // visualize {\n  tracer.select(i);\n  logger.println(` LIS[${i}] = ${LIS[i]}`);\n  // }\n  for (let j = 0; j < i; j++) {\n    // visualize {\n    tracer.patch(j);\n    Tracer.delay();\n    tracer.depatch(j);\n    // }\n    if (A[i] > A[j] && LIS[i] < LIS[j] + 1) {\n      LIS[i] = LIS[j] + 1;\n      // logger {\n      logger.println(` LIS[${i}] = ${LIS[i]}`);\n      // }\n    }\n  }\n  // visualize {\n  tracer.deselect(i);\n  // }\n}\n\n// Pick maximum of all LIS values\n// logger {\nlogger.println('Now calculate maximum of all LIS values ');\n// }\nlet max = LIS[0];\nfor (let i = 1; i < A.length; i++) {\n  if (max < LIS[i]) {\n    max = LIS[i];\n  }\n}\n// logger {\nlogger.println(`Longest Increasing Subsequence = max of all LIS = ${max}`);\n// }\n",
+  "category": "dynamic_programming",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "uses_randomize",
+    "has_logging"
+  ]
+}

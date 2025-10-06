@@ -1,0 +1,11 @@
+{
+  "name": "Nth Factorial",
+  "path": "Dynamic Programming/Nth Factorial/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\n// define tracer variables {\nconst tracer = new Array1DTracer('Sequence');\nLayout.setRoot(new VerticalLayout([tracer]));\nconst index = 15;\nconst D = [1];\nfor (let i = 1; i < index; i++) {\n  D.push(0);\n}\ntracer.set(D);\nTracer.delay();\n// }\n\nfor (let i = 1; i < index; i++) {\n  D[i] = D[i - 1] * i;\n  // visualize {\n  tracer.select(i - 1);\n  Tracer.delay();\n  tracer.patch(i, D[i]);\n  Tracer.delay();\n  tracer.depatch(i);\n  tracer.deselect(i - 1);\n  // }\n}\n",
+  "category": "dynamic_programming",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "custom_data"
+  ]
+}

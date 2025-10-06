@@ -1,0 +1,10 @@
+{
+  "name": "Flood Fill",
+  "path": "Brute Force/Flood Fill/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array2DTracer, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\nconst G = [\n  ['#', '#', '#', '#', '#', '#', '#', '#', '#'],\n  ['#', '-', '-', '-', '#', '-', '-', '-', '#'],\n  ['#', '-', '-', '-', '#', '-', '-', '-', '#'],\n  ['#', '-', '-', '#', '-', '-', '-', '-', '#'],\n  ['#', '#', '#', '-', '-', '-', '#', '#', '#'],\n  ['#', '-', '-', '-', '-', '#', '-', '-', '#'],\n  ['#', '-', '-', '-', '#', '-', '-', '-', '#'],\n  ['#', '-', '-', '-', '#', '-', '-', '-', '#'],\n  ['#', '#', '#', '#', '#', '#', '#', '#', '#'],\n];\n\n// define tracer variables {\nconst tracer = new Array2DTracer();\nLayout.setRoot(new VerticalLayout([tracer]));\ntracer.set(G);\nTracer.delay();\n// }\n\nfunction FloodFill(i, j, oldColor, newColor) {\n  if (i < 0 || i >= G.length || j < 0 || j >= G[i].length) return;\n  if (G[i][j] !== oldColor) return;\n\n  // set the color of node to newColor\n  G[i][j] = newColor;\n\n  // visualize {\n  tracer.select(i, j);\n  Tracer.delay();\n  tracer.patch(i, j, G[i][j]);\n  Tracer.delay();\n  // }\n\n  // next step four-way\n  FloodFill(i + 1, j, oldColor, newColor);\n  FloodFill(i - 1, j, oldColor, newColor);\n  FloodFill(i, j + 1, oldColor, newColor);\n  FloodFill(i, j - 1, oldColor, newColor);\n}\n\nFloodFill(4, 4, '-', 'a');\n\n",
+  "category": "other",
+  "patterns": [
+    "custom_data",
+    "uses_2d_array"
+  ]
+}

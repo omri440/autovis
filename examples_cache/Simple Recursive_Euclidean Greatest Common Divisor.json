@@ -1,0 +1,11 @@
+{
+  "name": "Euclidean Greatest Common Divisor",
+  "path": "Simple Recursive/Euclidean Greatest Common Divisor/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, LogTracer, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\nconst a = [];\na.push(465);\na.push(255);\n\n// define tracer variables {\nconst tracer = new Array1DTracer('Euclidean Algorithm');\ntracer.set(a);\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([tracer, logger]));\nTracer.delay();\n// }\n\n// logger {\nlogger.println(`Finding the greatest common divisor of ${a[0]} and ${a[1]}`);\n\nlogger.println('Checking if first number is at most the second number');\n// }\n\nif (a[0] > a[1]) {\n  const tmp = a[0];\n  a[0] = a[1];\n  a[1] = tmp;\n  // logger {\n  logger.println('The first number is bigger than the second number. Switching the numbers.');\n  // }\n  // visualize {\n  tracer.set(a);\n  Tracer.delay();\n  // }\n}\n\nwhile (a[0] > 0) {\n  // logger {\n  logger.println(`${a[1]} % ${a[0]} = ${a[1] % a[0]}`);\n  logger.println('Switching a[1] with a[1]%a[0]');\n  // }\n  a[1] %= a[0];\n  // visualize {\n  tracer.patch(1, a[1]);\n  Tracer.delay();\n  // }\n  // logger {\n  logger.println('Now switching the two values to keep a[0] < a[1]');\n  // }\n  const tmp = a[0];\n  a[0] = a[1];\n  a[1] = tmp;\n  // visualize {\n  tracer.patch(0, a[0]);\n  tracer.patch(1, a[1]);\n  Tracer.delay();\n  tracer.depatch(0);\n  tracer.depatch(1);\n  // }\n}\n\n// logger {\nlogger.println(`The greatest common divisor is ${a[1]}`);\n// }\n",
+  "category": "other",
+  "patterns": [
+    "patch_depatch",
+    "custom_data",
+    "has_logging"
+  ]
+}

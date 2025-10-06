@@ -1,0 +1,19 @@
+# Core Flask dependencies
+Flask==3.0.0
+flask-cors==4.0.0
+Werkzeug==3.0.1
+
+# AI Provider dependencies
+# Install based on which provider(s) you want to use:
+
+# For OpenAI (GPT-4)
+openai>=1.0.0
+
+# For Anthropic Claude
+anthropic>=0.18.0
+
+# For local LLM via Ollama (no additional package needed, uses requests)
+requests>=2.31.0
+
+# Environment variable management
+python-dotenv==1.0.0

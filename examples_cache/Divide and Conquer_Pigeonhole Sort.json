@@ -1,0 +1,12 @@
+{
+  "name": "Pigeonhole Sort",
+  "path": "Divide and Conquer/Pigeonhole Sort/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, Array2DTracer, LogTracer, Randomize, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\nconst A = Randomize.Array1D({ N: 7 });\nconst N = A.length;\n\n// define tracer variables {\nconst tracer1 = new Array1DTracer('Array');\nconst tracer2 = new Array2DTracer('Holes');\nconst logTracer = new LogTracer('Console');\nLayout.setRoot(new VerticalLayout([tracer1, tracer2, logTracer]));\ntracer1.set(A);\nTracer.delay();\n// }\n\nlet min = A[0];\nlet max = A[0];\n\nfor (let i = 1; i < N; i++) {\n  if (A[i] < min) {\n    min = A[i];\n  }\n  if (A[i] > max) {\n    max = A[i];\n  }\n}\nconst range = max - min + 1;\n\nconst holes = new Array(range);\nfor (let i = 0; i < range; i++) {\n  holes[i] = [];\n}\n// visualize {\ntracer2.set(holes);\n// }\n\n// logger {\nlogTracer.println('Filling up holes');\n// }\nfor (let i = 0; i < N; i++) {\n  // visualize {\n  tracer1.select(i);\n  Tracer.delay();\n  // }\n\n  holes[A[i] - min].push(A[i]);\n\n  // visualize {\n  tracer2.set(holes);\n  tracer1.deselect(i);\n  // }\n}\n\n// logger {\nlogTracer.println('Building sorted array');\n// }\nlet k = 0;\nfor (let i = 0; i < range; i++) {\n  for (let j = 0; j < holes[i].length; j++) {\n    // visualize {\n    tracer2.select(i, j);\n    Tracer.delay();\n    // }\n    A[k++] = holes[i][j];\n    // visualize {\n    tracer1.patch(k - 1, A[k - 1]);\n    Tracer.delay();\n    tracer2.deselect(i, j);\n    tracer1.depatch(k - 1);\n    // }\n  }\n}\n\n// logger {\nlogTracer.println(`Sorted array is ${A}`);\n// }\n",
+  "category": "sorting",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "uses_randomize",
+    "uses_2d_array"
+  ]
+}

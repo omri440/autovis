@@ -1,0 +1,11 @@
+{
+  "name": "Sliding Window",
+  "path": "Dynamic Programming/Sliding Window/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, LogTracer, Randomize, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\n// define tracer variables {\nconst tracer = new Array1DTracer();\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([tracer, logger]));\nconst D = Randomize.Array1D({ N: 20, value: () => Randomize.Integer({ min: -5, max: 5 }) });\ntracer.set(D);\nTracer.delay();\n// }\n\nlet sum = D[0] + D[1] + D[2];\nlet max = sum;\n// visualize {\ntracer.select(0, 2);\nlogger.println(`sum = ${sum}`);\nTracer.delay();\n// }\nfor (let i = 3; i < D.length; i++) {\n  sum += D[i] - D[i - 3];\n  if (max < sum) max = sum;\n  // visualize {\n  tracer.deselect(i - 3);\n  tracer.select(i);\n  logger.println(`sum = ${sum}`);\n  Tracer.delay();\n  // }\n}\n// visualize {\ntracer.deselect(D.length - 3, D.length - 1);\nlogger.println(`max = ${max}`);\n// }\n",
+  "category": "dynamic_programming",
+  "patterns": [
+    "select_deselect",
+    "uses_randomize",
+    "has_logging"
+  ]
+}

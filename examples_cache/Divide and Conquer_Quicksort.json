@@ -1,0 +1,13 @@
+{
+  "name": "Quicksort",
+  "path": "Divide and Conquer/Quicksort/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, ChartTracer, LogTracer, Randomize, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\n// define tracer variables {\nconst chart = new ChartTracer();\nconst tracer = new Array1DTracer();\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([chart, tracer, logger]));\nconst D = Randomize.Array1D({ N: 15 });\ntracer.set(D);\ntracer.chart(chart);\nTracer.delay();\n// }\n\n// logger {\nlogger.println(`original array = [${D.join(', ')}]`);\n// }\n\nfunction partition(D, low, high) {\n  let i;\n  let j;\n  let s;\n  while (high > low) {\n    i = low;\n    j = high;\n    s = D[low];\n    while (i < j) {\n      // visualize {\n      tracer.select(high);\n      tracer.select(low);\n      Tracer.delay();\n      // }\n      while (D[j] > s) {\n        // visualize {\n        tracer.select(j);\n        Tracer.delay();\n        tracer.deselect(j);\n        // }\n        j--;\n      }\n      D[i] = D[j];\n      // visualize {\n      tracer.patch(i, D[j]);\n      Tracer.delay();\n      tracer.depatch(i);\n      // }\n      while (s >= D[i] && i < j) {\n        // visualize {\n        tracer.select(i);\n        Tracer.delay();\n        tracer.deselect(i);\n        // }\n        i++;\n      }\n      D[j] = D[i];\n      // visualize {\n      tracer.patch(j, D[i]);\n      Tracer.delay();\n      tracer.depatch(j);\n      tracer.deselect(high);\n      tracer.deselect(low);\n      // }\n    }\n    D[i] = s;\n    // visualize {\n    tracer.patch(i, s);\n    Tracer.delay();\n    tracer.depatch(i);\n    // }\n    partition(D, low, i - 1);\n    low = i + 1;\n  }\n}\n\nfunction quicksort(D) {\n  partition(D, 0, D.length - 1);\n}\n\nquicksort(D);\n// logger {\nlogger.println(`sorted array = [${D.join(', ')}]`);\n// }\n",
+  "category": "sorting",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "uses_randomize",
+    "has_logging",
+    "uses_chart"
+  ]
+}

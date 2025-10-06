@@ -1,5 +1,6 @@
 // API Configuration
 const API_URL = 'http://localhost:5001/api/convert';
+const CONFIG_URL = 'http://localhost:5001/api/config';
 
 // DOM Elements
 const elements = {
@@ -14,6 +15,7 @@ const elements = {
     errorSection: document.getElementById('errorSection'),
     errorMessage: document.getElementById('errorMessage'),
     loadingSpinner: document.getElementById('loadingSpinner'),
+    loadingText: document.getElementById('loadingText'),
     statusIndicator: document.getElementById('statusIndicator'),
     lineCount: document.getElementById('lineCount'),
     charCount: document.getElementById('charCount'),
@@ -22,7 +24,13 @@ const elements = {
     arrays1d: document.getElementById('arrays1d'),
     arrays2d: document.getElementById('arrays2d'),
     vizType: document.getElementById('vizType'),
-    hasSorting: document.getElementById('hasSorting')
+    hasSorting: document.getElementById('hasSorting'),
+    aiToggle: document.getElementById('aiToggle'),
+    providerSelect: document.getElementById('providerSelect'),
+    aiOptions: document.getElementById('aiOptions'),
+    polishInfo: document.getElementById('polishInfo'),
+    polishStatus: document.getElementById('polishStatus'),
+    improvementText: document.getElementById('improvementText')
 };
 
 // Example algorithms
@@ -61,13 +69,13 @@ const EXAMPLES = {
     return []`
 };
 
-// Current example index
 let currentExampleIndex = 0;
 const exampleKeys = Object.keys(EXAMPLES);
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     loadSavedInput();
+    loadAISettings();
     updateStats();
     checkServerStatus();
     attachEventListeners();
@@ -81,6 +89,54 @@ function attachEventListeners() {
     elements.exampleBtn.addEventListener('click', handleExample);
     elements.copyBtn.addEventListener('click', handleCopy);
     elements.downloadBtn.addEventListener('click', handleDownload);
+    elements.aiToggle.addEventListener('change', handleAIToggle);
+    elements.providerSelect.addEventListener('change', handleProviderChange);
+}
+
+// AI Settings Management
+function handleAIToggle() {
+    const enabled = elements.aiToggle.checked;
+    elements.aiOptions.style.display = enabled ? 'block' : 'none';
+    saveAISettings();
+
+    if (enabled) {
+        showNotification('AI polishing enabled');
+    } else {
+        showNotification('AI polishing disabled');
+    }
+}
+
+function handleProviderChange() {
+    saveAISettings();
+    const provider = elements.providerSelect.value;
+    showNotification(`Switched to ${getProviderName(provider)}`);
+}
+
+function getProviderName(provider) {
+    const names = {
+        'claude': 'Claude (Anthropic)',
+        'openai': 'GPT-4 (OpenAI)',
+        'local': 'Local LLM (Ollama)'
+    };
+    return names[provider] || provider;
+}
+
+function saveAISettings() {
+    const settings = {
+        enabled: elements.aiToggle.checked,
+        provider: elements.providerSelect.value
+    };
+    chrome.storage.local.set({ aiSettings: settings });
+}
+
+function loadAISettings() {
+    chrome.storage.local.get(['aiSettings'], (result) => {
+        if (result.aiSettings) {
+            elements.aiToggle.checked = result.aiSettings.enabled;
+            elements.providerSelect.value = result.aiSettings.provider;
+            elements.aiOptions.style.display = result.aiSettings.enabled ? 'block' : 'none';
+        }
+    });
 }
 
 // Input change handler
@@ -120,6 +176,7 @@ function handleClear() {
     elements.outputSection.style.display = 'none';
     elements.errorSection.style.display = 'none';
     elements.analysisInfo.style.display = 'none';
+    elements.polishInfo.style.display = 'none';
     updateStats();
     saveInput();
 }
@@ -129,13 +186,10 @@ function handleExample() {
     const exampleKey = exampleKeys[currentExampleIndex];
     elements.pythonInput.value = EXAMPLES[exampleKey];
 
-    // Cycle to next example
     currentExampleIndex = (currentExampleIndex + 1) % exampleKeys.length;
 
     updateStats();
     saveInput();
-
-    // Show notification
     showNotification(`Loaded: ${formatExampleName(exampleKey)}`);
 }
 
@@ -147,13 +201,19 @@ function formatExampleName(key) {
 // Check server status
 async function checkServerStatus() {
     try {
-        const response = await fetch('http://localhost:5000/health', {
+        const response = await fetch('http://localhost:5001/health', {
             method: 'GET',
             mode: 'cors'
         });
 
         if (response.ok) {
+            const data = await response.json();
             updateStatus('connected', 'Server Connected');
+
+            // Update AI status in UI if available
+            if (data.ai_polish_enabled) {
+                console.log(`AI Polishing: ${data.ai_provider}`);
+            }
         } else {
             updateStatus('warning', 'Server Issue');
         }
@@ -192,18 +252,33 @@ async function handleConvert() {
     elements.outputSection.style.display = 'none';
     elements.errorSection.style.display = 'none';
     elements.analysisInfo.style.display = 'none';
+    elements.polishInfo.style.display = 'none';
 
     // Show loading
     elements.convertBtn.style.display = 'none';
     elements.loadingSpinner.classList.add('active');
 
+    // Update loading text based on AI settings
+    const aiEnabled = elements.aiToggle.checked;
+    if (aiEnabled) {
+        elements.loadingText.textContent = 'Processing with AI...';
+    } else {
+        elements.loadingText.textContent = 'Processing...';
+    }
+
     try {
+        const requestBody = {
+            code: code,
+            enable_polish: elements.aiToggle.checked,
+            polish_provider: elements.providerSelect.value
+        };
+
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ code })
+            body: JSON.stringify(requestBody)
         });
 
         const data = await response.json();
@@ -217,7 +292,7 @@ async function handleConvert() {
 
     } catch (error) {
         console.error('Conversion error:', error);
-        showError(error.message || 'Failed to connect to server. Make sure the Python server is running on localhost:5000');
+        showError(error.message || 'Failed to connect to server. Make sure the Python server is running on localhost:5001');
     } finally {
         // Hide loading
         elements.loadingSpinner.classList.remove('active');
@@ -235,9 +310,14 @@ function displayResults(data) {
     const lines = data.javascript.split('\n').length;
     elements.outputLineCount.textContent = `Lines: ${lines}`;
 
-    // Show analysis info if available
+    // Show analysis info
     if (data.analysis) {
         displayAnalysis(data.analysis);
+    }
+
+    // Show polishing info if available
+    if (data.polishing) {
+        displayPolishingInfo(data.polishing);
     }
 
     // Scroll to output
@@ -252,6 +332,43 @@ function displayAnalysis(analysis) {
     elements.hasSorting.textContent = analysis.has_sorting ? 'Yes' : 'No';
 
     elements.analysisInfo.style.display = 'block';
+}
+
+// Display polishing info
+function displayPolishingInfo(polishing) {
+    if (!polishing.enabled) {
+        elements.polishInfo.style.display = 'none';
+        return;
+    }
+
+    if (polishing.was_polished) {
+        elements.polishStatus.textContent = `AI Enhanced with ${getProviderName(polishing.provider)}`;
+
+        // Show improvements if available
+        if (polishing.improvements) {
+            const imp = polishing.improvements;
+            const changes = [];
+
+            if (imp.polished_logger_calls > imp.original_logger_calls) {
+                changes.push(`+${imp.polished_logger_calls - imp.original_logger_calls} log messages`);
+            }
+            if (imp.polished_comments > imp.original_comments) {
+                changes.push(`+${imp.polished_comments - imp.original_comments} comments`);
+            }
+
+            if (changes.length > 0) {
+                elements.improvementText.textContent = `Improvements: ${changes.join(', ')}`;
+            } else {
+                elements.improvementText.textContent = 'Code refined and optimized';
+            }
+        } else {
+            elements.improvementText.textContent = 'Code refined by AI';
+        }
+
+        elements.polishInfo.style.display = 'block';
+    } else {
+        elements.polishInfo.style.display = 'none';
+    }
 }
 
 // Show error
@@ -313,7 +430,6 @@ function handleDownload() {
 
 // Show notification
 function showNotification(message) {
-    // Create notification element
     const notification = document.createElement('div');
     notification.className = 'notification';
     notification.textContent = message;
@@ -334,7 +450,6 @@ function showNotification(message) {
 
     document.body.appendChild(notification);
 
-    // Remove after 3 seconds
     setTimeout(() => {
         notification.style.animation = 'slideOut 0.3s ease';
         setTimeout(() => notification.remove(), 300);
@@ -364,6 +479,116 @@ style.textContent = `
             transform: translateX(400px);
             opacity: 0;
         }
+    }
+
+    .ai-settings {
+        margin-bottom: 16px;
+    }
+
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+    }
+
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-switch label {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--bg-tertiary);
+        transition: 0.3s;
+        border-radius: 24px;
+    }
+
+    .toggle-switch label:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+    }
+
+    .toggle-switch input:checked + label {
+        background-color: var(--primary);
+    }
+
+    .toggle-switch input:checked + label:before {
+        transform: translateX(20px);
+    }
+
+    .ai-options {
+        padding: 16px 20px;
+        display: none;
+    }
+
+    .option-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .option-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+    }
+
+    .provider-select {
+        flex: 1;
+        padding: 8px 12px;
+        background: var(--code-bg);
+        color: var(--text-primary);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 13px;
+        font-family: inherit;
+        cursor: pointer;
+    }
+
+    .ai-description {
+        font-size: 12px;
+        color: var(--text-muted);
+        line-height: 1.5;
+    }
+
+    .polish-info {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid var(--success);
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .polish-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--success);
+        font-weight: 600;
+        font-size: 13px;
+    }
+
+    .polish-improvements {
+        font-size: 12px;
+        color: var(--text-secondary);
     }
 `;
 document.head.appendChild(style);

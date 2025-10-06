@@ -1,0 +1,11 @@
+{
+  "name": "Job Scheduling Problem",
+  "path": "Greedy/Job Scheduling Problem/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\nconst jobId = ['a', 'b', 'c', 'd', 'e'];\nconst deadline = [2, 1, 2, 1, 3];\nconst profit = [100, 19, 27, 25, 15];\nconst N = deadline.length;\n// sort according to decreasing order of profit\n// Bubble sort implemented ... Implement a better algorithm for better performance\nfor (let i = 0; i < N - 1; i++) {\n  for (let j = 0; j < N - i - 1; j++) {\n    if (profit[j] < profit[j + 1]) {\n      let temp = profit[j];\n      profit[j] = profit[j + 1];\n      profit[j + 1] = temp;\n      temp = deadline[j];\n      deadline[j] = deadline[j + 1];\n      deadline[j + 1] = temp;\n      const t = jobId[j];\n      jobId[j] = jobId[j + 1];\n      jobId[j + 1] = t;\n    }\n  }\n}\n\nconst slot = new Array(N);\nconst result = new Array(N);\nfor (let i = N - 1; i >= 0; i--) {\n  result[i] = '-';\n}\n\n// define tracer variables {\nconst tracer3 = new Array1DTracer('Schedule');\nconst tracer = new Array1DTracer('Job Ids');\nconst tracer1 = new Array1DTracer('Deadlines');\nconst tracer2 = new Array1DTracer('Profit');\nLayout.setRoot(new VerticalLayout([tracer3, tracer, tracer1, tracer2]));\ntracer.set(jobId);\ntracer1.set(deadline);\ntracer2.set(profit);\ntracer3.set(result);\nTracer.delay();\n// }\n\n// Initialise all slots to free\nfor (let i = 0; i < N; i++) {\n  slot[i] = 0;\n}\n\n// Iterate through all the given jobs\nfor (let i = 0; i < N; i++) {\n  /*\n     Start from the last possible slot.\n     Find a slot for the job\n     */\n  // visualize {\n  tracer.select(i);\n  Tracer.delay();\n  tracer1.select(i);\n  Tracer.delay();\n  // }\n  for (let j = Math.min(N, deadline[i]) - 1; j >= 0; j--) {\n    if (slot[j] === 0) {\n      // visualize {\n      tracer3.patch(j, jobId[i]);\n      Tracer.delay();\n      // }\n      result[j] = jobId[i];\n      slot[j] = 1;\n      // visualize {\n      tracer3.depatch(j);\n      // }\n      break;\n    }\n  }\n  // visualize {\n  tracer.deselect(i);\n  tracer1.deselect(i);\n  // }\n}\n\n",
+  "category": "greedy",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "custom_data"
+  ]
+}

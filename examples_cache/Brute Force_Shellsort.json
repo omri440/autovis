@@ -1,0 +1,13 @@
+{
+  "name": "Shellsort",
+  "path": "Brute Force/Shellsort/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, ChartTracer, LogTracer, Randomize, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\n// define tracer variables {\nconst chart = new ChartTracer();\nconst tracer = new Array1DTracer();\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([chart, tracer, logger]));\nconst D = Randomize.Array1D({ N: 15 });\ntracer.set(D);\ntracer.chart(chart);\nTracer.delay();\n// }\n\n// logger {\nlogger.println(`Original array = [${D.join(', ')}]`);\n// }\nconst N = D.length;\n\nfor (let gap = N; gap = parseInt(gap / 2);) {\n  // logger {\n  logger.println('');\n  logger.println(`Gap of ${gap}`);\n  // }\n  for (let i = gap; i < N; i++) {\n    // visualize {\n    tracer.select(i);\n    tracer.select(i - gap);\n    Tracer.delay();\n    // }\n    const k = D[i];\n    // logger {\n    logger.println(`Holding: ${k}`);\n    // }\n    let j;\n    for (j = i; j >= gap && k < D[j - gap]; j -= gap) {\n      // logger {\n      logger.println(`${k} < ${D[j - gap]}`);\n      // }\n      D[j] = D[j - gap];\n      // visualize {\n      tracer.patch(j, D[j]);\n      Tracer.delay();\n      tracer.depatch(j);\n      // }\n    }\n    const old = D[j];\n    D[j] = k;\n    // visualize {\n    if (old !== k) {\n      tracer.patch(j, D[j]);\n      Tracer.delay();\n      tracer.depatch(j);\n      logger.println(`Swapped ${D[j]} with ${old}`);\n    }\n\n    tracer.deselect(i);\n    tracer.deselect(i - gap);\n    // }\n  }\n}\n// logger {\nlogger.println('');\nlogger.println(`Sorted array = [${D.join(', ')}]`);\n// }\n",
+  "category": "sorting",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "uses_randomize",
+    "has_logging",
+    "uses_chart"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Nth Factorial",
+  "path": "Simple Recursive/Nth Factorial/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\n// define tracer variables {\nvar tracer = new Array1DTracer('Sequence');\nLayout.setRoot(new VerticalLayout([tracer]));\nvar index = 15;\nvar D = [1];\nfor (var i = 1; i < index; i++) {\n  D.push(0);\n}\ntracer.set(D);\nTracer.delay();\n// }\n\nfunction fact(num) {\n  if (num < 0) {\n    return;\n  }\n\n  if (num === 0) {\n    return 1;\n  }\n\n  var res = num * fact(num - 1);\n\n  D[num - 1] = res;\n  \n  // visualize {\n  tracer.select(num - 1);\n  Tracer.delay();\n  tracer.patch(num - 1, D[num - 1]);\n  Tracer.delay();\n  tracer.depatch(num - 1);\n  tracer.deselect(num - 1);\n  // }\n\n  return res;\n}\nfact(index);",
+  "category": "other",
+  "patterns": [
+    "select_deselect",
+    "patch_depatch",
+    "custom_data"
+  ]
+}

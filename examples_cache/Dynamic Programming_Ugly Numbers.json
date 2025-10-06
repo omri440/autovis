@@ -1,0 +1,11 @@
+{
+  "name": "Ugly Numbers",
+  "path": "Dynamic Programming/Ugly Numbers/code.js",
+  "code": "// import visualization libraries {\nconst { Tracer, Array1DTracer, LogTracer, Layout, VerticalLayout } = require('algorithm-visualizer');\n// }\n\nconst N = 15;\nconst A = new Array(N);\nfor (let i = N - 1; i >= 0; i--) {\n  A[i] = 0;\n}\nA[0] = 1; // By convention 1 is an ugly number\n\nconst M = [2, 3, 5]; // multiples of 2, 3, 5 respectively\nconst I = [0, 0, 0]; // iterators of 2, 3, 5 respectively\n\n// define tracer variables {\nconst tracer = new Array1DTracer('Ugly Numbers');\nconst tracer2 = new Array1DTracer('Multiples of 2, 3, 5');\nconst tracer3 = new Array1DTracer(' Iterators I0, I1, I2 ');\nconst logger = new LogTracer();\nLayout.setRoot(new VerticalLayout([tracer, tracer2, tracer3, logger]));\ntracer.set(A);\ntracer2.set(M);\ntracer3.set(I);\nTracer.delay();\n// }\n\nfor (let i = 1; i < N; i++) {\n  // next is minimum of m2, m3 and m5\n  const next = (M[0] <= M[1]) ? (M[0] <= M[2]) ? M[0] : M[2] : (M[1] <= M[2]) ? M[1] : M[2];\n  // logger {\n  logger.println(` Minimum of ${M[0]}, ${M[1]}, ${M[2]} : ${next}`);\n  // }\n  A[i] = next;\n\n  // visualize {\n  tracer.patch(i, A[i]);\n  Tracer.delay();\n  tracer.depatch(i);\n  // }\n\n  if (next === M[0]) {\n    I[0]++;\n    M[0] = A[I[0]] * 2;\n    // visualize {\n    tracer2.patch(0, M[0]);\n    Tracer.delay();\n    tracer3.patch(0, I[0]);\n    Tracer.delay();\n    tracer2.depatch(0);\n    tracer3.depatch(0);\n    // }\n  }\n  if (next === M[1]) {\n    I[1]++;\n    M[1] = A[I[1]] * 3;\n    // visualize {\n    tracer2.patch(1, M[1]);\n    Tracer.delay();\n    tracer3.patch(1, I[1]);\n    Tracer.delay();\n    tracer2.depatch(1);\n    tracer3.depatch(1);\n    // }\n  }\n  if (next === M[2]) {\n    I[2]++;\n    M[2] = A[I[2]] * 5;\n    // visualize {\n    tracer2.patch(2, M[2]);\n    Tracer.delay();\n    tracer3.patch(2, I[2]);\n    Tracer.delay();\n    tracer2.depatch(2);\n    tracer3.depatch(2);\n    // }\n  }\n}\n",
+  "category": "dynamic_programming",
+  "patterns": [
+    "patch_depatch",
+    "custom_data",
+    "has_logging"
+  ]
+}
